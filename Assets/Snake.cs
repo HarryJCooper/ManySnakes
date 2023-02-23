@@ -30,6 +30,11 @@ public class Snake : MonoBehaviour
     
     void Awake()
     {
+        // globalSnake info loads in here
+    }
+
+    void Start()
+    {
         if (!globalAssets) globalAssets = GameObject.Find("GlobalAssets").GetComponent<GlobalAssets>();
 
         snakeVals.playerNumber = globalAssets.snakeVals.Count;
@@ -37,7 +42,7 @@ public class Snake : MonoBehaviour
         snakeVals.snakeSpeedIncrease = 1;
         snakeVals.snakeLength = 1;
         snakeVals.snakeDirection = Direction.Forward;
-        // snakeVals.snakePositions.Add((this.transform.position.x, this.transform.position.y));
+        snakeVals.snakePositions.Add((this.transform.position.x, this.transform.position.y));
     }
 
     void Controls()
