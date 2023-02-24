@@ -4,83 +4,84 @@ using UnityEngine;
 
 public enum Direction
 {
-    Forward,
-    Right,
-    Back,
-    Left
+    Forward, Right, Back, Left
 }
 
-public struct SnakeVals
+public class SnakeVals
 {
     public int playerNumber;
     public int snakeSpeed;
     public int snakeSpeedIncrease;
-    public int snakeLength;
-    public Direction snakeDirection;
-    public List<(float, float)> snakePositions;
+    public List<Segment> segments = new List<Segment>();
+    public List<(float, float, Direction)> turnPositions = new List<(float, float, Direction)>();
 }
 
 public class Snake : MonoBehaviour
 {
-    List<Transform> tail = new List<Transform>();
     public GameObject tailPrefab;
     public GlobalAssets globalAssets;
     // this would get passed to the server, and then the server would send it to the other clients
-    public SnakeVals snakeVals;
+    public SnakeVals snakeVals = new SnakeVals();
+    float timer = 0;
     
-    void Awake()
-    {
-        // globalSnake info loads in here
-    }
-
     void Start()
     {
         if (!globalAssets) globalAssets = GameObject.Find("GlobalAssets").GetComponent<GlobalAssets>();
 
         snakeVals.playerNumber = globalAssets.snakeVals.Count;
-        snakeVals.snakeSpeed = 1;
-        snakeVals.snakeSpeedIncrease = 1;
-        snakeVals.snakeLength = 1;
-        snakeVals.snakeDirection = Direction.Forward;
-        snakeVals.snakePositions.Add((this.transform.position.x, this.transform.position.y));
+        snakeVals.segments.Add(transform.GetChild(0).gameObject.GetComponent<Segment>());
+        snakeVals.snakeSpeed = 60;
+        snakeVals.snakeSpeedIncrease = -1;
+        snakeVals.segments[0].direction = Direction.Forward;
     }
 
     void Controls()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            snakeVals.snakeDirection = Direction.Forward;
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            snakeVals.snakeDirection = Direction.Right;
-        }
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            snakeVals.snakeDirection = Direction.Back;
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            snakeVals.snakeDirection = Direction.Left;
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && snakeVals.segments[0].direction != Direction.Back){
+            snakeVals.segments[0].direction = Direction.Forward;
+            snakeVals.turnPositions.Add((snakeVals.segments[0].transform.position.x, snakeVals.segments[0].transform.position.z, snakeVals.segments[0].direction));
+        } else if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && snakeVals.segments[0].direction != Direction.Left){
+            snakeVals.segments[0].direction = Direction.Right;
+            snakeVals.turnPositions.Add((snakeVals.segments[0].transform.position.x, snakeVals.segments[0].transform.position.z, snakeVals.segments[0].direction));
+        } else if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && snakeVals.segments[0].direction != Direction.Forward){
+            snakeVals.segments[0].direction = Direction.Back;
+            snakeVals.turnPositions.Add((snakeVals.segments[0].transform.position.x, snakeVals.segments[0].transform.position.z, snakeVals.segments[0].direction));
+        } else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && snakeVals.segments[0].direction != Direction.Right){
+            snakeVals.segments[0].direction = Direction.Left;
+            snakeVals.turnPositions.Add((snakeVals.segments[0].transform.position.x, snakeVals.segments[0].transform.position.z, snakeVals.segments[0].direction));
         }
     }
 
-    void MovePlayer()
+    void MoveSegment()
     {
-        switch (snakeVals.snakeDirection)
-        {
-            case Direction.Forward:
-                transform.Translate(Vector3.forward * snakeVals.snakeSpeed * Time.deltaTime);
-                break;
-            case Direction.Right:
-                transform.Translate(Vector2.right * snakeVals.snakeSpeed * Time.deltaTime);
-                break;
-            case Direction.Back:
-                transform.Translate(Vector3.back * snakeVals.snakeSpeed * Time.deltaTime);
-                break;
-            case Direction.Left:
-                transform.Translate(Vector2.left * snakeVals.snakeSpeed * Time.deltaTime);
-                break;
+        timer = 0;
+        foreach (Segment segment in snakeVals.segments){
+            switch (segment.direction)
+            {
+                case Direction.Forward:
+                    segment.transform.Translate(Vector3.forward);
+                    break;
+                case Direction.Right:
+                    segment.transform.Translate(Vector2.right);
+                    break;
+                case Direction.Back:
+                    segment.transform.Translate(Vector3.back);
+                    break;
+                case Direction.Left:
+                    segment.transform.Translate(Vector2.left);
+                    break;
+            }
+
+            if (snakeVals.turnPositions.Count > 0) ChangeSegmentDirection(snakeVals.turnPositions, segment);
+        }
+    }
+
+    void ChangeSegmentDirection(List<(float, float, Direction)> turnPositions, Segment segment)
+    {
+        foreach ((float, float, Direction) turnPosition in turnPositions){
+            if (turnPosition.Item1 == segment.transform.position.x && turnPosition.Item2 == segment.transform.position.z){
+                segment.direction = turnPosition.Item3;
+            }
         }
     }
 
@@ -91,6 +92,7 @@ public class Snake : MonoBehaviour
 
     void FixedUpdate()
     {
-        MovePlayer();
+        timer += 1;
+        if (timer >= snakeVals.snakeSpeed) MoveSegment();
     }
 }
