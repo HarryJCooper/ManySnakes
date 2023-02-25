@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
 public enum Direction
 {
@@ -16,13 +17,14 @@ public class SnakeVals
     public Vector3[] segmentPositions = new Vector3[1];
 }
 
-public class Snake : MonoBehaviour
+public class Snake : NetworkBehaviour
 {
     public GameObject tailPrefab;
     public GlobalAssets globalAssets;
     // this would get passed to the server, and then the server would send it to the other clients
     public SnakeVals snakeVals = new SnakeVals();
     float timer = 0;
+    bool hasMoved;
     
     void Start()
     {
@@ -37,20 +39,27 @@ public class Snake : MonoBehaviour
 
     void Controls()
     {
-        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && snakeVals.segments[0].direction != Direction.Back){
+        if (hasMoved) return;
+        if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && snakeVals.segments[0].direction != Direction.Back && snakeVals.segments[0].direction != Direction.Forward){
             snakeVals.segments[0].direction = Direction.Forward;
-        } else if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && snakeVals.segments[0].direction != Direction.Left){
+            hasMoved = true;
+        } else if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && snakeVals.segments[0].direction != Direction.Left && snakeVals.segments[0].direction != Direction.Right){
             snakeVals.segments[0].direction = Direction.Right;
-        } else if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && snakeVals.segments[0].direction != Direction.Forward){
+            hasMoved = true;
+        } else if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && snakeVals.segments[0].direction != Direction.Forward && snakeVals.segments[0].direction != Direction.Back){
             snakeVals.segments[0].direction = Direction.Back;
-        } else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && snakeVals.segments[0].direction != Direction.Right){
+            hasMoved = true;
+        } else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && snakeVals.segments[0].direction != Direction.Right && snakeVals.segments[0].direction != Direction.Left){
             snakeVals.segments[0].direction = Direction.Left;
+            hasMoved = true;
         }
     }
 
     void MoveSegment()
     {
         timer = 0;
+        hasMoved = false;
+
         for (int i = 0; i < snakeVals.segmentPositions.Length; i++){
             snakeVals.segmentPositions[i] = snakeVals.segments[i].transform.position;
         }
@@ -78,7 +87,7 @@ public class Snake : MonoBehaviour
 
     void Update()
     {
-        Controls();
+        if (IsOwner) Controls();
     }
 
     void FixedUpdate()
