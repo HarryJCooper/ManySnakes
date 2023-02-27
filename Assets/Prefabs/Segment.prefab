@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3194960427658700417
+--- !u!1 &1088363577785339696
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,27 +8,26 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3194960427658700423}
-  - component: {fileID: 3194960427658700420}
-  - component: {fileID: 3194960427658700421}
-  - component: {fileID: 3194960427658700418}
-  - component: {fileID: 3194960427658700419}
-  - component: {fileID: 3194960427658700416}
-  - component: {fileID: -6288757230894543172}
+  - component: {fileID: 1088363577785339725}
+  - component: {fileID: 1088363577785339724}
+  - component: {fileID: 1088363577785339699}
+  - component: {fileID: 1088363577785339698}
+  - component: {fileID: 1088363577785339697}
+  - component: {fileID: 6017433482088894317}
   m_Layer: 0
-  m_Name: Snake
+  m_Name: Segment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3194960427658700423
+--- !u!4 &1088363577785339725
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
+  m_GameObject: {fileID: 1088363577785339696}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -37,21 +36,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &3194960427658700420
+--- !u!33 &1088363577785339724
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
+  m_GameObject: {fileID: 1088363577785339696}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &3194960427658700421
+--- !u!23 &1088363577785339699
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
+  m_GameObject: {fileID: 1088363577785339696}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -87,43 +86,40 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3194960427658700418
+--- !u!65 &1088363577785339698
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
+  m_GameObject: {fileID: 1088363577785339696}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3194960427658700419
+--- !u!114 &1088363577785339697
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
+  m_GameObject: {fileID: 1088363577785339696}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3999986619b1c469a936d7f5e8713868, type: 3}
+  m_Script: {fileID: 11500000, guid: dfec37dd8a02042e1b9d87a715cba947, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  snakeSpeed: 0
-  snakeSpeedIncrease: 0
-  clientId: 0
-  segments: []
-  segmentPositions: []
---- !u!114 &3194960427658700416
+  direction: 0
+  inUse: 0
+--- !u!114 &6017433482088894317
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
+  m_GameObject: {fileID: 1088363577785339696}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
@@ -133,17 +129,3 @@ MonoBehaviour:
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
---- !u!114 &-6288757230894543172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3194960427658700417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfec37dd8a02042e1b9d87a715cba947, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  direction: 0
-  inUse: 0

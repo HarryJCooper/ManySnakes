@@ -571,6 +571,11 @@ MonoBehaviour:
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 1088363577785339696, guid: 2f9b1d1e5f03c49a586198b6709a2231, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
     TickRate: 30
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
@@ -770,6 +775,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   snakePrefab: {fileID: 3194960427658700417, guid: 75534d284b37f4f0cb87f4921209e733, type: 3}
+  segmentPrefab: {fileID: 1088363577785339696, guid: 2f9b1d1e5f03c49a586198b6709a2231, type: 3}
+  snakes: []
 --- !u!4 &929549753
 Transform:
   m_ObjectHideFlags: 0

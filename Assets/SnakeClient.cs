@@ -21,8 +21,6 @@ public class SnakeClient : NetworkBehaviour
         currentDirection = Direction.Forward;
     }
 
-
-
     void Controls()
     {
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && currentDirection != Direction.Back && currentDirection != Direction.Forward){
@@ -43,6 +41,7 @@ public class SnakeClient : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !hasSnake){
             hasSnake = true;
             snakeManager.CreateSnakeServerRpc(clientId);
+            snakeManager.AddSegmentServerRpc(clientId);
         }
     }
 

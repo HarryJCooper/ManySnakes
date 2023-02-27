@@ -5,11 +5,10 @@ using UnityEngine;
 public class Segment : MonoBehaviour
 {
     public Direction direction;
-    public bool inUse;
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Snake" && inUse)
+        if (other.gameObject.tag == "Snake")
         {
             // if (other.gameObject.GetComponent<Snake>() == this.gameObject.transform.parent.GetComponent<Snake>()){
             //     Debug.Log("You hit yourself");
@@ -22,6 +21,5 @@ public class Segment : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!inUse) transform.position = new Vector3(0, 1000, 0);
     }
 }
