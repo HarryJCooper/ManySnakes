@@ -130,6 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   direction: 0
+  inUse: 0
 --- !u!114 &2304280061017736520
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,9 +178,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3812798840548533223}
-  - component: {fileID: 3812798840548533216}
   - component: {fileID: 7061405750200619721}
   - component: {fileID: 4623476440181664412}
+  - component: {fileID: 4085885318292116359}
   m_Layer: 0
   m_Name: Player
   m_TagString: Snake
@@ -203,20 +204,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3812798840548533216
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3812798840548533217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3999986619b1c469a936d7f5e8713868, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tailPrefab: {fileID: 3812798839939192224}
-  globalAssets: {fileID: 0}
 --- !u!114 &7061405750200619721
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,3 +246,17 @@ MonoBehaviour:
   ScaleThreshold: 0.01
   InLocalSpace: 0
   Interpolate: 1
+--- !u!114 &4085885318292116359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3812798840548533217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a089562e89b2e44e29546f97c3bfe944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clientId: 0
+  snakeManager: {fileID: 0}

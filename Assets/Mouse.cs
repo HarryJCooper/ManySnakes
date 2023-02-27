@@ -1,56 +1,69 @@
-using System.Collections.Generic;
-using UnityEngine;
+// using System.Collections.Generic;
+// using UnityEngine;
+// using Unity.Netcode;
 
-public class Mouse : MonoBehaviour
-{
-    Snake snake;
-    List<Segment> segments;
-    bool beenEaten;
+// public class Mouse : NetworkBehaviour
+// {
+//     Snake snake;
+//     List<Segment> segments;
+//     public SegmentContainer segmentContainer;
+//     bool beenEaten;
 
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Snake")
-        {
-            snake = other.transform.parent.GetComponent<Snake>();
-            SnakeVals snakeVals = snake.snakeVals;
-            segments = snakeVals.segments;
-            beenEaten = true;
-        }
-    }
+//     void Start()
+//     {
+//         segmentContainer = GameObject.Find("SegmentContainer").GetComponent<SegmentContainer>();
+//     }
+
+//     void OnTriggerEnter(Collider other)
+//     {
+//         if (other.gameObject.tag == "Snake")
+//         {
+//             snake = other.GetComponent<Snake>();
+//             segments = snake.segments;
+//             beenEaten = true;
+//         }
+//     }
     
-    void Update()
-    {
-        if (!beenEaten) return;
-        foreach (Segment segment in segments){
-            if (segment.transform.position == this.transform.position){
-                return;
-            }
-        }
-        beenEaten = false;
-        AddSegment();
-    }
+//     void Update()
+//     {
+//         if (!beenEaten) return;
+//         foreach (Segment segment in segments){
+//             if (segment.transform.position == this.transform.position){
+//                 return;
+//             }
+//         }
+//         beenEaten = false;
+//         AddSegment();
+//     }
 
-    void AddSegment()
-    {
-        GameObject segment = Instantiate(
-            snake.tailPrefab, 
-            this.transform.position,
-            this.transform.rotation
-        );
-        segment.transform.parent = snake.transform;
-        segment.GetComponent<Segment>().direction = segments[segments.Count - 1].direction;
-        snake.snakeVals.segments.Add(segment.GetComponent<Segment>());
-        snake.snakeVals.segmentPositions = new Vector3[snake.snakeVals.segments.Count];
-        foreach (Segment seg in snake.snakeVals.segments){
-            snake.snakeVals.segmentPositions[snake.snakeVals.segments.IndexOf(seg)] = seg.transform.position;
-        }
+//     void AddSegment()
+//     {
+//         // loop through our segment array and find the first segment that isn't in use
+//         foreach(GameObject segmentObj in segmentContainer.segments){
+//             Segment segment = segmentObj.GetComponent<Segment>();
+//             if (segment.inUse) continue;
+//             segment.inUse = true;
+//             // set the direction of the segment to the direction of the last segment
+//             segment.direction = segments[segments.Count - 1].direction;
+//             // move it from it's storage position to the position of the mouse
+//             segment.transform.position = this.transform.position;
+//             snake.segments.Add(segment);
+//             break;
+//         }
+        
+//         snake.segmentPositions = new Vector3[snake.segments.Count];
+        
+//         foreach (Segment segment in snake.segments){
+//             snake.segmentPositions[snake.segments.IndexOf(segment)] = segment.transform.position;
 
-        this.transform.position = new Vector3(
-            Random.Range(-10, 10),
-            0,
-            Random.Range(-10, 10)
-        );
+//         }
 
-        snake.snakeVals.snakeSpeed -= snake.snakeVals.snakeSpeedIncrease;
-    }
-}
+//         this.transform.position = new Vector3(
+//             Random.Range(-10, 10),
+//             0,
+//             Random.Range(-10, 10)
+//         );
+
+//         snake.snakeSpeed -= snake.snakeSpeedIncrease;
+//     }
+// }
