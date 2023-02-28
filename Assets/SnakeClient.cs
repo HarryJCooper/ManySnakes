@@ -18,6 +18,8 @@ public class SnakeClient : NetworkBehaviour
 
         snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
 
+        snakeManager.CreateSnakeServerRpc(clientId);
+
         currentDirection = Direction.Forward;
     }
 
@@ -36,12 +38,6 @@ public class SnakeClient : NetworkBehaviour
         } else if ((Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) && currentDirection != Direction.Right && currentDirection != Direction.Left){
             snakeManager.DirectSnakeServerRpc(Direction.Left, clientId);
             currentDirection = Direction.Left;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && !hasSnake){
-            hasSnake = true;
-            snakeManager.CreateSnakeServerRpc(clientId);
-            snakeManager.AddSegmentServerRpc(clientId);
         }
     }
 
