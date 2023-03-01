@@ -76,6 +76,10 @@ public class SnakeManager : NetworkBehaviour
             case Direction.Left:
                 snake.segments[0].transform.Translate(Vector2.left);
                 break;
+            case Direction.None:
+                Debug.Log("Snake: " + snake.clientId + " is dead");
+                snake.isDead = true;
+                break;
         }
 
         for (int i = 1; i < snake.segments.Count; i++){
@@ -119,7 +123,7 @@ public class SnakeManager : NetworkBehaviour
             Snake snake = snakeObj.GetComponent<Snake>();
             if (snake.segments.Count == 0) continue;
             snake.timer += 1;
-            if (snake.timer >= snake.snakeSpeed) MoveSegment(snake);
+            if (snake.timer >= snake.snakeSpeed && !snake.isDead) MoveSegment(snake);
         }
     }
 }
