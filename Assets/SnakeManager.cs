@@ -13,13 +13,6 @@ public class SnakeManager : NetworkBehaviour
 
     public List<GameObject> snakes = new List<GameObject>();
 
-    public void Start()
-    {
-        if (IsServer) Debug.Log("SnakeManager is server");
-        if (IsHost) Debug.Log("SnakeManager is host");
-        if (IsClient) Debug.Log("SnakeManager is client");
-    }
-
     public void AddSegment(GameObject snake)
     {
         if (!IsServer) return;
@@ -89,11 +82,32 @@ public class SnakeManager : NetworkBehaviour
             snake.segments[i].transform.position = snake.segmentPositions[i - 1];
         }
 
+        CheckIfHit(snake);
+
         if (snake.segments[snake.segments.Count - 1].transform.position == mouse.transform.position){
             if (!IsServer) return;
             AddSegment(snake.gameObject);
             mouse.transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
             Debug.Log("Snake: " + snake.clientId + " ate mouse");
+        }
+    }
+
+    void CheckIfHit(Snake snake)
+    {
+        for (int i = 1; i < snake.segments.Count; i++){
+            if (snake.segments[0].transform.position == snake.segments[i].transform.position){
+                Debug.Log("Snake: " + snake.clientId + " hit itself");
+                snake.segments[0].GetComponent<Segment>().direction = Direction.None;
+            }
+        }
+        foreach (GameObject otherSnake in snakes){
+            if (otherSnake == snake.gameObject) continue;
+            for (int i = 0; i < otherSnake.GetComponent<Snake>().segments.Count; i++){
+                if (snake.segments[0].transform.position == otherSnake.GetComponent<Snake>().segments[i].transform.position){
+                    Debug.Log("Snake: " + snake.clientId + " hit other snake");
+                    snake.segments[0].GetComponent<Segment>().direction = Direction.None;
+                }
+            }
         }
     }
 

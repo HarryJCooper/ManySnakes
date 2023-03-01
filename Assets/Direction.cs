@@ -1,4 +1,4 @@
 public enum Direction
 {
-    Forward, Right, Back, Left
+    Forward, Right, Back, Left, None
 }
