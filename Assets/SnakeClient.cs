@@ -6,20 +6,16 @@ using Unity.Netcode;
 public class SnakeClient : NetworkBehaviour
 {
     public ulong clientId;
-    public SnakeManager snakeManager; // make snakeManager a sigleton
+    public SnakeManager snakeManager; // make snakeManager a singleton
     Direction currentDirection;
     bool hasSnake;
 
     void Start()
     {
         clientId = NetworkManager.Singleton.LocalClientId;
-
         Debug.Log("SnakeClient start: " + clientId);
-
         snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
-
         snakeManager.CreateSnakeServerRpc(clientId);
-
         currentDirection = Direction.Forward;
     }
 
@@ -40,8 +36,6 @@ public class SnakeClient : NetworkBehaviour
             currentDirection = Direction.Left;
         }
     }
-
-    
 
     void Update()
     {

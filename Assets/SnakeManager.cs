@@ -7,20 +7,37 @@ using UnityEngine.Events;
 public class SnakeManager : NetworkBehaviour
 {
     public GameObject snakePrefab;
-    public GameObject segmentPrefab;
+    public GameObject mouse;
+    public GameObject[] segmentArray;
+    int segmentCount;
+
     public List<GameObject> snakes = new List<GameObject>();
+
+    public void Start()
+    {
+        if (IsServer) Debug.Log("SnakeManager is server");
+        if (IsHost) Debug.Log("SnakeManager is host");
+        if (IsClient) Debug.Log("SnakeManager is client");
+    }
 
     public void AddSegment(GameObject snake)
     {
+        if (!IsServer) return;
         Debug.Log("AddSegment: " + snake.GetComponent<Snake>().clientId);
-        GameObject spawnedSegment = Instantiate(segmentPrefab);
-        segmentPrefab.GetComponent<NetworkObject>().Spawn();
-        snake.GetComponent<Snake>().segments.Add(spawnedSegment);
+        snake.GetComponent<Snake>().segments.Add(segmentArray[segmentCount]);
+        snake.GetComponent<Snake>().segmentPositions.Add(mouse.transform.position);
+        segmentCount++;
     }
 
     [ServerRpc (RequireOwnership = false)]
     public void CreateSnakeServerRpc(ulong clientId)
     {
+        foreach (GameObject snk in snakes){
+            if (snk.GetComponent<Snake>().clientId == clientId){
+                Debug.Log("Snake already exists: " + clientId);
+                return;
+            }
+        }
         GameObject spawnedSnake = Instantiate(snakePrefab, this.transform);
         Snake snake = spawnedSnake.GetComponent<Snake>(); 
         spawnedSnake.GetComponent<NetworkObject>().Spawn();
@@ -70,6 +87,13 @@ public class SnakeManager : NetworkBehaviour
 
         for (int i = 1; i < snake.segments.Count; i++){
             snake.segments[i].transform.position = snake.segmentPositions[i - 1];
+        }
+
+        if (snake.segments[snake.segments.Count - 1].transform.position == mouse.transform.position){
+            if (!IsServer) return;
+            AddSegment(snake.gameObject);
+            mouse.transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
+            Debug.Log("Snake: " + snake.clientId + " ate mouse");
         }
     }
 
