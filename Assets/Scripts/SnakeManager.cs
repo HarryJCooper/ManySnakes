@@ -61,22 +61,23 @@ public class SnakeManager : NetworkBehaviour
         switch (snake.segments[0].GetComponent<Segment>().direction)
         {
             case Direction.Forward:
-                snake.segments[0].transform.Translate(Vector3.forward);
+                snake.segments[0].transform.rotation = Quaternion.Euler(0, 0, 0);
                 break;
             case Direction.Right:
-                snake.segments[0].transform.Translate(Vector2.right);
+                snake.segments[0].transform.rotation = Quaternion.Euler(0, 90, 0);
                 break;
             case Direction.Back:
-                snake.segments[0].transform.Translate(Vector3.back);
+                snake.segments[0].transform.rotation = Quaternion.Euler(0, 180, 0);
                 break;
             case Direction.Left:
-                snake.segments[0].transform.Translate(Vector2.left);
+                snake.segments[0].transform.rotation = Quaternion.Euler(0, -90, 0);
                 break;
             case Direction.None:
                 Debug.Log("Snake: " + snake.clientId + " is dead");
                 snake.isDead = true;
                 break;
         }
+        if (!snake.isDead) snake.segments[0].transform.Translate(Vector3.forward);
 
         for (int i = 1; i < snake.segments.Count; i++){
             snake.segments[i].transform.position = snake.segmentPositions[i - 1];
