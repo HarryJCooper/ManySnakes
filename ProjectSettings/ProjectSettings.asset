@@ -889,11 +889,11 @@ PlayerSettings:
     m_VersionName: 
   apiCompatibilityLevel: 6
   activeInputHandler: 0
-  cloudProjectId: 
+  cloudProjectId: 9c4d1f03-86c2-41ec-b977-0f3f7f545471
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: ManySnakes
+  organizationId: harry_unity459
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 

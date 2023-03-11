@@ -16,7 +16,6 @@ public class SnakeManager : NetworkBehaviour
     public void AddSegment(GameObject snake)
     {
         if (!IsServer) return;
-        Debug.Log("AddSegment: " + snake.GetComponent<Snake>().clientId);
         snake.GetComponent<Snake>().segments.Add(segmentArray[segmentCount]);
         snake.GetComponent<Snake>().segmentPositions.Add(mouse.transform.position);
         segmentCount++;
@@ -27,7 +26,6 @@ public class SnakeManager : NetworkBehaviour
     {
         foreach (GameObject snk in snakes){
             if (snk.GetComponent<Snake>().clientId == clientId){
-                Debug.Log("Snake already exists: " + clientId);
                 return;
             }
         }
@@ -39,13 +37,11 @@ public class SnakeManager : NetworkBehaviour
         snakes.Add(spawnedSnake);
         snake.segments.Add(spawnedSnake);
         snake.segmentPositions.Add(spawnedSnake.transform.position);
-        Debug.Log("CreatedSnake: " + clientId);
     }
 
     [ServerRpc (RequireOwnership = false)]
     public void DirectSnakeServerRpc(Direction direction, ulong clientId)
     {
-        Debug.Log("DirectSnakeServerRpc: " + clientId + " " + direction);
         foreach (GameObject snake in snakes){
             if (snake.GetComponent<Snake>().clientId == clientId){
                 snake.GetComponent<Segment>().direction = direction;
@@ -92,7 +88,6 @@ public class SnakeManager : NetworkBehaviour
             if (!IsServer) return;
             AddSegment(snake.gameObject);
             mouse.transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
-            Debug.Log("Snake: " + snake.clientId + " ate mouse");
         }
     }
 
