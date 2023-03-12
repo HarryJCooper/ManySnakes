@@ -16,7 +16,7 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_PLAYER_CHARACTER = "Character";
     public const string KEY_GAME_MODE = "GameMode";
-    public const string KEY_START_GAME = 0;
+    public const string KEY_START_GAME = "";
 
 
 
@@ -358,7 +358,11 @@ public class LobbyManager : MonoBehaviour {
             try {
                 Debug.Log("StartGame");
 
-                string relayCode = await TestRelay.Instance.CreateRelay();
+                // HERE IS WHERE I CREATE A RELAY SERVER
+                // THEN IM PASSING THAT TO THE LOBBY DATA
+                // THEN I CAN USE THAT DATA TO CONNECT TO THE RELAY SERVER FOR THE CLIENT!
+
+                string relayCode = await TestRelay.CreateRelay();
                 
                 Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
                     Data = new Dictionary<string, DataObject> {
