@@ -9,7 +9,7 @@ public class SnakeManager : NetworkBehaviour
     public GameObject snakePrefab;
     public GameObject mouse;
     public GameObject[] segmentArray;
-    public Color mouseColour;
+    public Color mouseColour, snakeColour;
     int segmentCount;
     float reduction;
     float scale;
@@ -18,7 +18,8 @@ public class SnakeManager : NetworkBehaviour
 
     void Start()
     {
-        mouseColour = mouse.GetComponent<Renderer>().material.color;
+        mouseColour = mouse.GetComponent<Renderer>().sharedMaterial.color;
+        snakeColour = snakePrefab.GetComponent<Renderer>().sharedMaterial.color;
     }
 
     public void AddSegment(GameObject snake)
@@ -104,12 +105,14 @@ public class SnakeManager : NetworkBehaviour
         if (!IsServer) return;
         if (Vector3.Distance(snake.segments[0].transform.position, mouse.transform.position) < 0.35f){
             mouse.GetComponent<Renderer>().material.color = snake.GetComponent<Renderer>().material.color;
+            foreach(GameObject segment in snake.segments) segment.GetComponent<Renderer>().material.color = mouseColour;
             // could animate mouth opening here
         }
 
         if (Vector3.Distance(snake.segments[snake.segments.Count - 1].transform.position, mouse.transform.position) < 0.35f){
             AddSegment(snake.gameObject);
             mouse.GetComponent<Renderer>().material.color = mouseColour;
+            foreach(GameObject segment in snake.segments) segment.GetComponent<Renderer>().material.color = snakeColour;
             mouse.transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
         }
     }

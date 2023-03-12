@@ -560,6 +560,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 580585990, guid: b1d5f376d1f154441b241a25c2d45fe4, type: 3}
+      propertyPath: light
+      value: 
+      objectReference: {fileID: 580585989}
     - target: {fileID: 3052466329639095081, guid: b1d5f376d1f154441b241a25c2d45fe4, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -2004,6 +2008,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1088363577785339725, guid: 2f9b1d1e5f03c49a586198b6709a2231, type: 3}
   m_PrefabInstance: {fileID: 545768843}
   m_PrefabAsset: {fileID: 0}
+--- !u!108 &580585989 stripped
+Light:
+  m_CorrespondingSourceObject: {fileID: 8699225248286280694, guid: b1d5f376d1f154441b241a25c2d45fe4, type: 3}
+  m_PrefabInstance: {fileID: 124659124}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &604318468
 GameObject:
   m_ObjectHideFlags: 0
@@ -3116,6 +3125,7 @@ MonoBehaviour:
   - {fileID: 1172651894}
   - {fileID: 1583335513}
   mouseColour: {r: 0, g: 0, b: 0, a: 0}
+  snakeColour: {r: 0, g: 0, b: 0, a: 0}
   snakes: []
 --- !u!4 &929549753
 Transform:
@@ -3605,7 +3615,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c52f74108b3a741018b4d10d1af4f946, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
