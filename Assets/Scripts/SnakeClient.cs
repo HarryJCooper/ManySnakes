@@ -23,7 +23,6 @@ public class SnakeClient : NetworkBehaviour
     {
         if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && currentDirection != Direction.Back && currentDirection != Direction.Forward){
             snakeManager.DirectSnakeServerRpc(Direction.Forward, clientId);
-            Debug.Log("Controls: " + clientId);
             currentDirection = Direction.Forward;
         } else if ((Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)) && currentDirection != Direction.Left && currentDirection != Direction.Right){
             snakeManager.DirectSnakeServerRpc(Direction.Right, clientId);

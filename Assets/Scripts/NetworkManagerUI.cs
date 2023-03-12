@@ -30,7 +30,7 @@ public class NetworkManagerUI : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () => {
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
         };
-        // if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
     private async void CreateRelay(){

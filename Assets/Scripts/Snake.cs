@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class Snake : NetworkBehaviour
 {
-    public int snakeSpeed = 20;
+    public int snakeSpeed = 10;
     public int snakeSpeedIncrease = 1;
     public float timer = 0;
     public bool hasMoved;

@@ -9,9 +9,17 @@ public class SnakeManager : NetworkBehaviour
     public GameObject snakePrefab;
     public GameObject mouse;
     public GameObject[] segmentArray;
+    public Color mouseColour;
     int segmentCount;
+    float reduction;
+    float scale;
 
     public List<GameObject> snakes = new List<GameObject>();
+
+    void Start()
+    {
+        mouseColour = mouse.GetComponent<Renderer>().material.color;
+    }
 
     public void AddSegment(GameObject snake)
     {
@@ -19,6 +27,14 @@ public class SnakeManager : NetworkBehaviour
         snake.GetComponent<Snake>().segments.Add(segmentArray[segmentCount]);
         snake.GetComponent<Snake>().segmentPositions.Add(mouse.transform.position);
         segmentCount++;
+        float snakeLength = (float)snake.GetComponent<Snake>().segments.Count;
+        Debug.Log("SnakeLength: " + snakeLength);
+        reduction = snakeLength / 100;
+        Debug.Log("Reduction: " + reduction);
+        scale = (1 - reduction);
+        Debug.Log("Scale: " + scale);
+        Debug.Log("SegmentCount: " + segmentCount);
+        snake.GetComponent<Snake>().segments[segmentCount].transform.localScale = new Vector3(scale, scale, scale);
     }
 
     [ServerRpc (RequireOwnership = false)]
@@ -33,7 +49,7 @@ public class SnakeManager : NetworkBehaviour
         Snake snake = spawnedSnake.GetComponent<Snake>(); 
         spawnedSnake.GetComponent<NetworkObject>().Spawn();
         snake.clientId = clientId;
-        snake.snakeSpeed = 30;
+        snake.snakeSpeed = 4;
         snakes.Add(spawnedSnake);
         snake.segments.Add(spawnedSnake);
         snake.segmentPositions.Add(spawnedSnake.transform.position);
@@ -77,7 +93,7 @@ public class SnakeManager : NetworkBehaviour
                 snake.isDead = true;
                 break;
         }
-        if (!snake.isDead) snake.segments[0].transform.Translate(Vector3.forward);
+        if (!snake.isDead) snake.segments[0].transform.Translate((Vector3.forward * 0.2f));
 
         for (int i = 1; i < snake.segments.Count; i++){
             snake.segments[i].transform.position = snake.segmentPositions[i - 1];
@@ -85,9 +101,15 @@ public class SnakeManager : NetworkBehaviour
 
         CheckIfHit(snake);
 
-        if (snake.segments[snake.segments.Count - 1].transform.position == mouse.transform.position){
-            if (!IsServer) return;
+        if (!IsServer) return;
+        if (Vector3.Distance(snake.segments[0].transform.position, mouse.transform.position) < 0.35f){
+            mouse.GetComponent<Renderer>().material.color = snake.GetComponent<Renderer>().material.color;
+            // could animate mouth opening here
+        }
+
+        if (Vector3.Distance(snake.segments[snake.segments.Count - 1].transform.position, mouse.transform.position) < 0.35f){
             AddSegment(snake.gameObject);
+            mouse.GetComponent<Renderer>().material.color = mouseColour;
             mouse.transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
         }
     }
