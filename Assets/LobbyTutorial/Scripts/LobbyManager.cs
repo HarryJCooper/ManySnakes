@@ -44,8 +44,6 @@ public class LobbyManager : NetworkBehaviour {
         Zombie
     }
 
-
-
     private float heartbeatTimer;
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
@@ -79,15 +77,10 @@ public class LobbyManager : NetworkBehaviour {
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-        try {
-            QuickJoinLobby();
-            Debug.Log("Quick Joining Lobby");
-        } catch (LobbyServiceException e) {
-            CreateLobby("Public", 100, false, );
-            CreateRelay();
-            Debug.Log("Creating Lobby");
-            Debug.Log(e);
-        }
+        CreateLobby("Public", 100, false);
+        CreateRelay();
+        QuickJoinLobby();
+        Debug.Log("Quick Joining Lobby");
     }
 
     private void HandleRefreshLobbyList() {
@@ -171,9 +164,6 @@ public class LobbyManager : NetworkBehaviour {
         CreateLobbyOptions options = new CreateLobbyOptions {
             Player = player,
             IsPrivate = isPrivate,
-            Data = new Dictionary<string, DataObject> {
-                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public) }
-            }
         };
 
         Lobby lobby = await LobbyService.Instance.CreateLobbyAsync(lobbyName, maxPlayers, options);
@@ -216,18 +206,6 @@ public class LobbyManager : NetworkBehaviour {
         } catch (LobbyServiceException e) {
             Debug.Log(e);
         }
-    }
-
-    public async void JoinLobbyByCode(string lobbyCode) {
-        Player player = GetPlayer();
-
-        Lobby lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode, new JoinLobbyByCodeOptions {
-            Player = player
-        });
-
-        joinedLobby = lobby;
-
-        OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
     }
 
     public async void JoinLobby(Lobby lobby) {
