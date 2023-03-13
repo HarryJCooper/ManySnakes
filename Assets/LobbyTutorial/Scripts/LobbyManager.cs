@@ -273,8 +273,6 @@ public class LobbyManager : NetworkBehaviour {
 
             Lobby lobby = await LobbyService.Instance.QuickJoinLobbyAsync(options);
 
-            
-
             joinedLobby = lobby;
 
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
@@ -336,6 +334,7 @@ public class LobbyManager : NetworkBehaviour {
                             value: joinCode)
                     }
                 }
+                // object initialiser syntax lets you asign values to properties at creation time without invoking a constructor
             });
         } catch (RelayServiceException e) {
             Debug.Log("Error creating relay: " + e.Message);
