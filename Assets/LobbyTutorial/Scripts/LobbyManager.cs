@@ -21,6 +21,7 @@ public class LobbyManager : NetworkBehaviour {
 
     public const string KEY_PLAYER_NAME = "PlayerName";
     public const string KEY_PLAYER_CHARACTER = "Character";
+    public const string KEY_JOIN_CODE = "Character";
 
     public event EventHandler OnLeftLobby;
 
@@ -75,8 +76,8 @@ public class LobbyManager : NetworkBehaviour {
 
         await AuthenticationService.Instance.SignInAnonymouslyAsync();
 
-            QuickJoinLobby();
-            Debug.Log("Quick Joining Lobby");
+        QuickJoinLobby();
+        Debug.Log("Quick Joining Lobby");
     }
 
     private void HandleRefreshLobbyList() {
@@ -277,9 +278,13 @@ public class LobbyManager : NetworkBehaviour {
             joinedLobby = lobby;
 
             OnJoinedLobby?.Invoke(this, new LobbyEventArgs { lobby = lobby });
+
+            JoinRelay(joinedLobby.Data[KEY_JOIN_CODE].Value);
         } catch (LobbyServiceException e) {
             CreateLobby("Public", 100, false);
             CreateRelay();
+            
+
             Debug.Log("Creating Lobby");
             Debug.Log(e);
         }
@@ -322,6 +327,16 @@ public class LobbyManager : NetworkBehaviour {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartHost();
+
+            Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
+                Data = new Dictionary<string, DataObject>() {
+                    {
+                        KEY_JOIN_CODE, new DataObject(
+                            visibility: DataObject.VisibilityOptions.Public,
+                            value: joinCode)
+                    }
+                }
+            });
         } catch (RelayServiceException e) {
             Debug.Log("Error creating relay: " + e.Message);
         }
