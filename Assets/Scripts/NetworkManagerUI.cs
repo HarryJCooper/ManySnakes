@@ -30,10 +30,10 @@ public class NetworkManagerUI : MonoBehaviour
         AuthenticationService.Instance.SignedIn += () => {
             Debug.Log("Signed in " + AuthenticationService.Instance.PlayerId);
         };
-        if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
+        // if (!AuthenticationService.Instance.IsSignedIn) await AuthenticationService.Instance.SignInAnonymouslyAsync();
     }
 
-    private async void CreateRelay(){
+    public async void CreateRelay(){
         try {
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(3);
 
@@ -53,7 +53,7 @@ public class NetworkManagerUI : MonoBehaviour
         }
     }
 
-    private async void JoinRelay(string joinCode){
+    public async void JoinRelay(string joinCode){
         try {
             joinCode = joinCodeInput.text.Substring(0,6);
             Debug.Log("Joining relay with code: " + joinCode);

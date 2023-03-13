@@ -29,12 +29,8 @@ public class SnakeManager : NetworkBehaviour
         snake.GetComponent<Snake>().segmentPositions.Add(mouse.transform.position);
         segmentCount++;
         float snakeLength = (float)snake.GetComponent<Snake>().segments.Count;
-        Debug.Log("SnakeLength: " + snakeLength);
         reduction = snakeLength / 100;
-        Debug.Log("Reduction: " + reduction);
         scale = (1 - reduction);
-        Debug.Log("Scale: " + scale);
-        Debug.Log("SegmentCount: " + segmentCount);
         snake.GetComponent<Snake>().segments[segmentCount].transform.localScale = new Vector3(scale, scale, scale);
     }
 
