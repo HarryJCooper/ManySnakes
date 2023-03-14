@@ -13,4 +13,5 @@ public class Snake : NetworkBehaviour
     public List<GameObject> segments = new List<GameObject>();
     public List<Vector3> segmentPositions = new List<Vector3>(1);
     public bool isDead;
+    public Color snakeColour;
 }

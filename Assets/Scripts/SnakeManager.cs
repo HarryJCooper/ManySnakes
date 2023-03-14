@@ -9,6 +9,7 @@ public class SnakeManager : NetworkBehaviour
     public GameObject snakePrefab;
     public GameObject mouse;
     public GameObject[] segmentArray;
+    public Light[] lightArray;
     public Color mouseColour, snakeColour;
     int segmentCount;
     float reduction;
@@ -35,7 +36,7 @@ public class SnakeManager : NetworkBehaviour
     }
 
     [ServerRpc (RequireOwnership = false)]
-    public void CreateSnakeServerRpc(ulong clientId)
+    public void CreateSnakeServerRpc(ulong clientId, Color snakeColour)
     {
         foreach (GameObject snk in snakes){
             if (snk.GetComponent<Snake>().clientId == clientId){
@@ -43,13 +44,16 @@ public class SnakeManager : NetworkBehaviour
             }
         }
         GameObject spawnedSnake = Instantiate(snakePrefab, this.transform);
-        Snake snake = spawnedSnake.GetComponent<Snake>(); 
+        Snake snake = spawnedSnake.GetComponent<Snake>();
         spawnedSnake.GetComponent<NetworkObject>().Spawn();
+        snake.snakeColour = snakeColour;
+        foreach(GameObject segment in snake.segments) segment.GetComponent<Renderer>().material.color = snake.snakeColour;
         snake.clientId = clientId;
-        snake.snakeSpeed = 4;
+        snake.snakeSpeed = 3;
         snakes.Add(spawnedSnake);
         snake.segments.Add(spawnedSnake);
         snake.segmentPositions.Add(spawnedSnake.transform.position);
+        snake.snakeColour = snakeColour;
     }
 
     [ServerRpc (RequireOwnership = false)]
@@ -108,7 +112,17 @@ public class SnakeManager : NetworkBehaviour
             mouse.GetComponent<Renderer>().material.color = mouseColour;
             foreach(GameObject segment in snake.segments) segment.GetComponent<Renderer>().material.color = snakeColour;
             mouse.transform.position = new Vector3(Random.Range(-10, 10), 0, Random.Range(-10, 10));
+            StartCoroutine(Light(snake));
             AddSegment(snake.gameObject);
+        }
+    }
+
+    IEnumerator Light(Snake snake)
+    {
+        foreach (Light light in lightArray){
+            light.color = snake.snakeColour;
+            yield return new WaitForSeconds(0.25f);
+            light.color = Color.white;
         }
     }
 
@@ -127,6 +141,24 @@ public class SnakeManager : NetworkBehaviour
                     Debug.Log("Snake: " + snake.clientId + " hit other snake");
                     snake.segments[0].GetComponent<Segment>().direction = Direction.None;
                 }
+            }
+        }
+    }
+
+    [ServerRpc (RequireOwnership = false)]
+    public void ChangeSnakeColorServerRpc(Color color, ulong clientId)
+    {
+        Debug.Log("Changing snake color to: " + color + " for client: " + clientId);
+        foreach (GameObject snake in snakes){
+            Snake snk = snake.GetComponent<Snake>();
+            if (snk.clientId == clientId){
+                Debug.Log("TWO! Changing snake color to: " + color + " for client: " + clientId);
+                snk.snakeColour = color;
+                foreach(GameObject segment in snk.segments){
+                    Debug.Log("THREE! Changing segment color to: " + color + " for client: " + clientId);
+                    segment.GetComponent<Renderer>().sharedMaterial.SetColor("_EmissionColor", color);
+                    segment.GetComponent<Renderer>().sharedMaterial.SetColor("_Albedo", color);
+                } 
             }
         }
     }

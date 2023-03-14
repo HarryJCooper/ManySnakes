@@ -9,13 +9,14 @@ public class SnakeClient : NetworkBehaviour
     public SnakeManager snakeManager; // make snakeManager a singleton
     Direction currentDirection;
     bool hasSnake;
+    Color snakeColour;
 
     void Start()
     {
         clientId = NetworkManager.Singleton.LocalClientId;
         Debug.Log("SnakeClient start: " + clientId);
         snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
-        snakeManager.CreateSnakeServerRpc(clientId);
+        snakeManager.CreateSnakeServerRpc(clientId, snakeColour);
         currentDirection = Direction.Forward;
     }
 

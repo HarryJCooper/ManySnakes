@@ -18,10 +18,9 @@ public class LobbyManager : NetworkBehaviour {
 
     public static LobbyManager Instance { get; private set; }
 
-
     public const string KEY_PLAYER_NAME = "PlayerName";
-    public const string KEY_PLAYER_CHARACTER = "Character";
-    public const string KEY_JOIN_CODE = "Character";
+    public const string KEY_PLAYER_COLOR = "Green";
+    public const string KEY_JOIN_CODE = "JOINCODE";
 
     public event EventHandler OnLeftLobby;
 
@@ -37,17 +36,12 @@ public class LobbyManager : NetworkBehaviour {
         public List<Lobby> lobbyList;
     }
 
-    public enum PlayerCharacter {
-        Marine,
-        Ninja,
-        Zombie
-    }
-
     private float heartbeatTimer;
     private float lobbyPollTimer;
     private float refreshLobbyListTimer = 5f;
     private Lobby joinedLobby;
     private string playerName;
+    private Color playerColor;
 
 
     private void Awake() {
@@ -55,13 +49,14 @@ public class LobbyManager : NetworkBehaviour {
     }
 
     private void Update() {
-        //HandleRefreshLobbyList(); // Disabled Auto Refresh for testing with multiple builds
         HandleLobbyHeartbeat();
         HandleLobbyPolling();
     }
 
-    public async void Authenticate(string playerName) {
+    public async void Authenticate(string playerName, Color playerColor) {
         this.playerName = playerName;
+        this.playerColor = playerColor;
+        Debug.Log("Authenticating " + playerName + " " + playerColor);
         InitializationOptions initializationOptions = new InitializationOptions();
         initializationOptions.SetProfile(playerName);
 
@@ -78,18 +73,6 @@ public class LobbyManager : NetworkBehaviour {
 
         QuickJoinLobby();
         Debug.Log("Quick Joining Lobby");
-    }
-
-    private void HandleRefreshLobbyList() {
-        if (UnityServices.State == ServicesInitializationState.Initialized && AuthenticationService.Instance.IsSignedIn) {
-            refreshLobbyListTimer -= Time.deltaTime;
-            if (refreshLobbyListTimer < 0f) {
-                float refreshLobbyListTimerMax = 5f;
-                refreshLobbyListTimer = refreshLobbyListTimerMax;
-
-                RefreshLobbyList();
-            }
-        }
     }
 
     private async void HandleLobbyHeartbeat() {
@@ -128,10 +111,6 @@ public class LobbyManager : NetworkBehaviour {
         }
     }
 
-    public Lobby GetJoinedLobby() {
-        return joinedLobby;
-    }
-
     public bool IsLobbyHost() {
         return joinedLobby != null && joinedLobby.HostId == AuthenticationService.Instance.PlayerId;
     }
@@ -151,7 +130,7 @@ public class LobbyManager : NetworkBehaviour {
     private Player GetPlayer() {
         return new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject> {
             { KEY_PLAYER_NAME, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) },
-            { KEY_PLAYER_CHARACTER, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, PlayerCharacter.Marine.ToString()) }
+            { KEY_PLAYER_COLOR, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerColor.ToString()) }
         });
     }
 
@@ -242,18 +221,20 @@ public class LobbyManager : NetworkBehaviour {
         }
     }
 
-    public async void UpdatePlayerCharacter(PlayerCharacter playerCharacter) {
+    public async void UpdatePlayerColor(Color playerColor) {
         if (joinedLobby != null) {
             try {
                 UpdatePlayerOptions options = new UpdatePlayerOptions();
 
                 options.Data = new Dictionary<string, PlayerDataObject>() {
                     {
-                        KEY_PLAYER_CHARACTER, new PlayerDataObject(
+                        KEY_PLAYER_COLOR, new PlayerDataObject(
                             visibility: PlayerDataObject.VisibilityOptions.Public,
-                            value: playerCharacter.ToString())
+                            value: playerColor.ToString())
                     }
                 };
+
+                Debug.Log("Updating Player Color: " + playerColor.ToString());
 
                 string playerId = AuthenticationService.Instance.PlayerId;
 
@@ -282,7 +263,6 @@ public class LobbyManager : NetworkBehaviour {
             CreateLobby("Public", 100, false);
             CreateRelay();
             
-
             Debug.Log("Creating Lobby");
             Debug.Log(e);
         }
@@ -336,6 +316,11 @@ public class LobbyManager : NetworkBehaviour {
                 }
                 // object initialiser syntax lets you asign values to properties at creation time without invoking a constructor
             });
+
+            Debug.Log("Create relay: " + playerColor.ToString());
+            SnakeManager snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
+            snakeManager.ChangeSnakeColorServerRpc(playerColor, NetworkManager.Singleton.LocalClientId);
+
         } catch (RelayServiceException e) {
             Debug.Log("Error creating relay: " + e.Message);
         }
@@ -351,6 +336,10 @@ public class LobbyManager : NetworkBehaviour {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
+
+            SnakeManager snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
+            Debug.Log("Join relay: " + playerColor.ToString());
+            snakeManager.ChangeSnakeColorServerRpc(playerColor, NetworkManager.Singleton.LocalClientId);
         } catch (RelayServiceException e) {
             Debug.Log("Error joining relay: " + e.Message);
         }
