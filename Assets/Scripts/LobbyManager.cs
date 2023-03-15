@@ -318,9 +318,6 @@ public class LobbyManager : NetworkBehaviour {
             });
 
             Debug.Log("Create relay: " + playerColor.ToString());
-            SnakeManager snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
-            snakeManager.ChangeSnakeColorServerRpc(playerColor, NetworkManager.Singleton.LocalClientId);
-
         } catch (RelayServiceException e) {
             Debug.Log("Error creating relay: " + e.Message);
         }
@@ -336,10 +333,6 @@ public class LobbyManager : NetworkBehaviour {
             NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
             NetworkManager.Singleton.StartClient();
-
-            SnakeManager snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
-            Debug.Log("Join relay: " + playerColor.ToString());
-            snakeManager.ChangeSnakeColorServerRpc(playerColor, NetworkManager.Singleton.LocalClientId);
         } catch (RelayServiceException e) {
             Debug.Log("Error joining relay: " + e.Message);
         }

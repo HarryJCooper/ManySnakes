@@ -16,6 +16,7 @@ public class SnakeClient : NetworkBehaviour
         clientId = NetworkManager.Singleton.LocalClientId;
         Debug.Log("SnakeClient start: " + clientId);
         snakeManager = GameObject.Find("SnakeManager").GetComponent<SnakeManager>();
+        // add snake colours to dictionary in lobby, then get the colour from the dictionary
         snakeManager.CreateSnakeServerRpc(clientId, snakeColour);
         currentDirection = Direction.Forward;
     }
